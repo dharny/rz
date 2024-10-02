@@ -1,0 +1,241 @@
+package com.facebook;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class SignupPage {
+
+	//_____________________________________________________________Login (background)
+	
+	public static WebDriver driver ;
+	public static Actions action ;
+	
+	@Given("the user launches Facebook application {string}")
+	public void the_user_launches_facebook_application(String string) {
+		WebDriverManager.edgedriver().setup();
+		
+		EdgeOptions options = new EdgeOptions();
+		options.addArguments("--start-maximized");
+		driver = new EdgeDriver(options);
+		driver.get(string);
+		
+		action = new Actions(driver);
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+	}
+
+	@When("User clicks on create new account button")
+	public void user_clicks_on_create_new_account_button() {
+	    
+		WebElement createNewAccount_btn = driver.findElement(By.xpath("//a[contains(text(),'Create new account')]"));
+		action.click(createNewAccount_btn).build().perform();
+		
+	}
+
+
+	//_____________________________________________________________Login (background)
+	
+	@When("User enters first name and surname")
+	public void user_enters_first_name_and_surname() {
+		 WebElement firstNameinput = driver.findElement(By.xpath("//input[@name = 'firstname']"));
+		   action.click(firstNameinput).sendKeys("Raj").build().perform();
+		   
+		   WebElement surNameinput = driver.findElement(By.xpath("//input[@name = 'lastname']"));
+		   action.click(surNameinput).sendKeys("Kumar").build().perform();
+	}
+	
+	
+	//____________________________________________________________one dimensional List
+	
+	@When("User fills the sign up form with one dimensional list")
+	public void user_fills_the_sign_up_form_with_one_dimensional_list(DataTable dataTable) {
+	   List <List<String>> inputs=  dataTable.asLists(String.class);
+	   String firstName = inputs.get(0).get(0);
+	   String surName = inputs.get(0).get(1); 
+	   String phNo = inputs.get(0).get(2);
+	   String passCode = inputs.get(0).get(3);
+	   
+	   WebElement firstNameinput = driver.findElement(By.xpath("//input[@name = 'firstname']"));
+	   action.click(firstNameinput).sendKeys(firstName).build().perform();
+	   
+	   WebElement surNameinput = driver.findElement(By.xpath("//input[@name = 'lastname']"));
+	   action.click(surNameinput).sendKeys(surName).build().perform();
+	   
+	   WebElement daySelectE = driver.findElement(By.cssSelector("select#day"));
+	   Select daySelect = new Select(daySelectE);
+	   daySelect.selectByValue("20");
+	   
+	   WebElement monthSelectE = driver.findElement(By.cssSelector("select#month"));
+	   Select monthSelect = new Select(monthSelectE);
+	   monthSelect.selectByValue("4");
+	   
+	   WebElement yearSelectE = driver.findElement(By.cssSelector("select#year"));
+	   Select yearSelect = new Select(yearSelectE);
+	   yearSelect.selectByValue("2001");
+	   
+	   
+	   WebElement radioInput = driver.findElement(By.xpath("//input[@id = 'sex' and @value = '1']"));
+	   action.click(radioInput).build().perform();
+	   
+	   WebElement mobNo = driver.findElement(By.xpath("//div[contains(text(), 'Mobile number or email address')]"));
+	   action.click(mobNo).sendKeys(phNo).build().perform();
+	   
+	   WebElement passWordInput = driver.findElement(By.xpath("//input[@name = 'reg_passwd__']"));
+	   action.click(passWordInput).sendKeys(passCode).build().perform();
+	   
+	   WebElement SignUp_btn = driver.findElement(By.xpath("//button[@name = 'websubmit']"));
+	   action.click(SignUp_btn).build().perform();
+	   
+	   
+	   
+	   
+	}
+	
+	//_______________________________________________________________ one dimensional List
+	
+	
+	//_______________________________________________________-------MAP
+	
+	@When("User fills the sign up form with map")
+	public void user_fills_the_sign_up_form_with_map(io.cucumber.datatable.DataTable dataTable) {
+	    Map<String,String> creds = dataTable.asMap(String.class, String.class);
+	    
+	    String firstNamee = creds.get("firstName");
+	    String surName =creds.get("surName");
+	    String phno =creds.get("mobNo");
+	    String passwd =creds.get("password");
+	    
+	    WebElement firstNameinput = driver.findElement(By.xpath("//input[@name = 'firstname']"));
+	    action.click(firstNameinput).sendKeys(firstNamee).build().perform();
+		   
+		   WebElement surNameinput = driver.findElement(By.xpath("//input[@name = 'lastname']"));
+		   action.click(surNameinput).sendKeys(surName).build().perform();
+		   
+		   WebElement daySelectE = driver.findElement(By.cssSelector("select#day"));
+		   Select daySelect = new Select(daySelectE);
+		   daySelect.selectByValue("20");
+		   
+		   WebElement monthSelectE = driver.findElement(By.cssSelector("select#month"));
+		   Select monthSelect = new Select(monthSelectE);
+		   monthSelect.selectByValue("4");
+		   
+		   WebElement yearSelectE = driver.findElement(By.cssSelector("select#year"));
+		   Select yearSelect = new Select(yearSelectE);
+		   yearSelect.selectByValue("2001");
+		   
+		   
+		   WebElement radioInput = driver.findElement(By.xpath("//input[@id = 'sex' and @value = '1']"));
+		   action.click(radioInput).build().perform();
+		   
+		   WebElement mobNo = driver.findElement(By.xpath("//div[contains(text(), 'Mobile number or email address')]"));
+		   action.click(mobNo).sendKeys(phno).build().perform();
+		   
+		   WebElement passWordInput = driver.findElement(By.xpath("//input[@name = 'reg_passwd__']"));
+		   action.click(passWordInput).sendKeys(passwd).build().perform();
+		   
+		   WebElement SignUp_btn = driver.findElement(By.xpath("//button[@name = 'websubmit']"));
+		   action.click(SignUp_btn).build().perform();
+
+	    
+	}
+	
+	//_______________________________________________________-------MAP
+
+	@When("User chooses Date of birth")
+	public void user_chooses_date_of_birth() {
+		WebElement daySelectE = driver.findElement(By.cssSelector("select#day"));
+		Select daySelect = new Select(daySelectE);
+		daySelect.selectByValue("20");
+		   
+		WebElement monthSelectE = driver.findElement(By.cssSelector("select#month"));
+		Select monthSelect = new Select(monthSelectE);
+		monthSelect.selectByValue("4");
+		   
+		WebElement yearSelectE = driver.findElement(By.cssSelector("select#year"));
+		Select yearSelect = new Select(yearSelectE);
+		yearSelect.selectByValue("2001");
+	}
+
+	@When("User selects Gender")
+	public void user_selects_gender() {
+		WebElement radioInput = driver.findElement(By.xpath("//input[@id = 'sex' and @value = '1']"));
+		action.click(radioInput).build().perform();
+	}
+
+	@When("User enters mobile number or email address")
+	public void user_enters_mobile_number_or_email_address() {
+		WebElement mobNo = driver.findElement(By.xpath("//div[contains(text(), 'Mobile number or email address')]"));
+		action.click(mobNo).sendKeys("993355dd44").build().perform();
+		   
+		   
+		   
+		   
+		   
+	}
+
+	@When("User enters New PassWord")
+	public void user_enters_new_pass_word() {
+		WebElement passWordInput = driver.findElement(By.xpath("//input[@name = 'reg_passwd__']"));
+		action.click(passWordInput).sendKeys("sdkhfsh@233").build().perform();
+	}
+
+	@When("user clicks signup")
+	public void user_clicks_signup() {
+		WebElement SignUp_btn = driver.findElement(By.xpath("//button[@name = 'websubmit']"));
+	    action.click(SignUp_btn).build().perform();
+	}
+	
+	@Then("taking Screenshot of the execution one")
+	public void taking_screenshot_of_the_execution_one() throws IOException {
+		TakesScreenshot ts = (TakesScreenshot) driver ;
+		File srcfile = ts.getScreenshotAs(OutputType.FILE);
+	    //File DestFile = new File("F:\testing\Cucumber New\Facebook\src\test\resources\Screehshots\Screenshot01.png");
+	    
+	    //FileUtils.copyFile(srcfile, DestFile);
+	}
+
+	@Then("taking Screenshot of the execution two")
+	public void taking_screenshot_of_the_execution_two() throws IOException {
+		TakesScreenshot ts = (TakesScreenshot) driver ;
+		File srcfile = ts.getScreenshotAs(OutputType.FILE);
+	    //File DestFile = new File("F:\testing\Cucumber New\Facebook\src\test\resources\Screehshots\Screenshot02.png");
+	    
+	    //FileUtils.copyFile(srcfile, DestFile);
+	}
+
+	@Then("taking Screenshot of the execution three")
+	public void taking_screenshot_of_the_execution_three() throws IOException {
+		TakesScreenshot ts = (TakesScreenshot) driver ;
+	    
+	    File srcfile = ts.getScreenshotAs(OutputType.FILE);
+	    //File DestFile = new File("F:\testing\Cucumber New\Facebook\src\test\resources\Screehshots\Screenshot03.png");
+	    
+	    //FileUtils.copyFile(srcfile, DestFile);
+	    
+	}
+	
+
+
+	    
+	
+	
+}
